@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambulance / Service Booking App — Architecture</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: 'Syne', sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        body {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 0;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            background: #f5f5f5;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px 16px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            font-size: 13px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #333;
+        }
+
+        .nav-group {
+            margin-bottom: 16px;
+        }
+
+        .nav-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 6px 8px;
+            margin: 2px 0;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+
+        .nav-item:hover {
+            background: #e8e8e8;
+            padding-left: 12px;
+        }
+
+        .nav-item.active {
+            background: #333;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 24px 32px;
+            overflow-y: auto;
+            background: #ffffff;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .doc-meta {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 20px 0 12px 0;
+            padding-top: 16px;
+            border-top: 2px solid #333;
+            color: #1a1a1a;
+        }
+
+        h3 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 12px 0 8px 0;
+            color: #222;
+        }
+
+        h4 {
+            font-size: 13px;
+            font-weight: 700;
+            margin: 10px 0 6px 0;
+            color: #333;
+        }
+
+        p {
+            margin: 6px 0;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        ul, ol {
+            margin: 8px 0 8px 20px;
+            padding-left: 0;
+        }
+
+        li {
+            margin: 3px 0;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #333;
+            color: #fff;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        tr:hover {
+            background: #f0f0f0;
+        }
+
+        /* Diagrams */
+        .diagram-wrapper {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 3px;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin: 0 2px;
+        }
+
+        .badge-present {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .badge-absent {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .badge-unused {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        /* Info/Warning Boxes */
+        .info-box, .warning-box, .danger-box {
+            padding: 12px;
+            margin: 12px 0;
+            border-left: 4px solid;
+            border-radius: 3px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left-color: #0066cc;
+            color: #004085;
+        }
+
+        .warning-box {
+            background: #fff8e1;
+            border-left-color: #f59e0b;
+            color: #664d03;
+        }
+
+        .danger-box {
+            background: #ffe7e7;
+            border-left-color: #ef4444;
+            color: #721c24;
+        }
+
+        /* Code blocks */
+        code {
+            background: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 12px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 8px 0;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #d4d4d4;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        * {
+            scrollbar-color: #888 #f1f1f1;
+            scrollbar-width: thin;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            body {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                width: 280px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s;
+                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main {
+                padding: 16px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+        }
+
+        .toc-section {
+            margin-bottom: 32px;
+        }
+
+        strong {
+            font-weight: 700;
+        }
+
+        em {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-title">Architecture Docs</div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Overview</div>
+            <a class="nav-item active" onclick="scrollTo('section-1')">1. Purpose</a>
+            <a class="nav-item" onclick="scrollTo('section-2')">2. System Summary</a>
+            <a class="nav-item" onclick="scrollTo('section-3')">3. High-Level Architecture</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Domains</div>
+            <a class="nav-item" onclick="scrollTo('section-4')">4. Booking Domains</a>
+            <a class="nav-item" onclick="scrollTo('section-5')">5. Application Services</a>
+            <a class="nav-item" onclick="scrollTo('section-6')">6. Subservices</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Infrastructure</div>
+            <a class="nav-item" onclick="scrollTo('section-7')">7. Cloud / Hosting</a>
+            <a class="nav-item" onclick="scrollTo('section-8')">8. Security & Monitoring</a>
+            <a class="nav-item" onclick="scrollTo('section-9')">9. Special Modules</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Platform</div>
+            <a class="nav-item" onclick="scrollTo('section-10')">10. API Surface</a>
+            <a class="nav-item" onclick="scrollTo('section-11')">11. Technology Stack</a>
+            <a class="nav-item" onclick="scrollTo('section-12')">12. Functional Description</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Network & Security</div>
+            <a class="nav-item" onclick="scrollTo('section-13')">13. Network Architecture</a>
+            <a class="nav-item" onclick="scrollTo('section-14')">14. Production Best Practices</a>
+            <a class="nav-item" onclick="scrollTo('section-15')">15. Cybersecurity RBAC</a>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Risk & Recovery</div>
+            <a class="nav-item" onclick="scrollTo('section-16')">16. Disaster Recovery</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <h1>Ambulance / Service Booking App</h1>
+        <div class="doc-meta">
+            <strong>Architecture & Technical Overview</strong><br>
+            Version 1.0 | Prepared: 2026-08-30<br>
+            Based on: Direct codebase inspection — Laravel 10 (PHP 8.2) monolithic application
+        </div>
+
+        <!-- Section 1: Purpose -->
+        <section id="section-1" class="toc-section">
+            <h2>1. Purpose</h2>
+            <p>This document describes the current, as-built technical architecture of the platform, covering both product lines it serves:</p>
+            <ul>
+                <li><strong>Vehicle Booking (Taxi/Ride-hailing)</strong> — Rider requests a ride, a Driver is dispatched, ride is completed and paid for.</li>
+                <li><strong>Service Booking (Home/Field Services)</strong> — Rider books a service (e.g. ambulance, medical support, field services), a qualified Driver/Service Provider is dispatched, service is delivered and paid for.</li>
+            </ul>
+            <p>It is meant to give stakeholders an accurate picture of what exists today, so that scoping, estimation, and roadmap discussions are based on facts rather than assumptions.</p>
+        </section>
+
+        <!-- Section 2: System Summary -->
+        <section id="section-2" class="toc-section">
+            <h2>2. System Summary</h2>
+            <p>The backend is a <strong>single Laravel 10 (PHP 8.2) monolithic application</strong> — not a microservices architecture. It serves three kinds of clients from one codebase:</p>
+            <table>
+                <tr>
+                    <th>Client</th>
+                    <th>Interface</th>
+                    <th>Location</th>
+                </tr>
+                <tr>
+                    <td>Rider mobile app</td>
+                    <td>REST API (<code>/api/rider/*</code>)</td>
+                    <td>External; mobile source not in this repository</td>
+                </tr>
+                <tr>
+                    <td>Driver mobile app</td>
+                    <td>REST API (<code>/api/driver/*</code>)</td>
+                    <td>External; mobile source not in this repository</td>
+                </tr>
+                <tr>
+                    <td>Admin / Company staff</td>
+                    <td>Server-rendered web dashboards (Blade)</td>
+                    <td>Part of this repository</td>
+                </tr>
+            </table>
+            <p>The system is <strong>multi-tenant</strong>: each customer/partner company is identified by subdomain (<code>{company}.<main-domain></code>), enforced via an <code>IdentifyTenant</code> middleware on every tenant-scoped route.</p>
+        </section>
+
+        <!-- Section 3: High-Level Architecture -->
+        <section id="section-3" class="toc-section">
+            <h2>3. High-Level Architecture Diagram</h2>
+            <div class="diagram-wrapper">
+                <div class="mermaid">
+flowchart TD
+    subgraph ACTORS["Users / Drivers / Partners"]
+        RIDER["Rider / Customer"]
+        DRIVER["Driver / Service Provider"]
+        COMPANY["Company / Partner Admin"]
+        OPERATOR["Operator"]
+        SYSADMIN["Platform SysAdmin"]
+    end
+
+    subgraph CLIENTS["Client Applications"]
+        RIDERAPP["Rider Mobile App<br/>(external)"]
+        DRIVERAPP["Driver Mobile App<br/>(external)"]
+        WEBADMIN["Admin Web Dashboards<br/>Blade + Bootstrap"]
+    end
+
+    subgraph ENTRY["Entry / API Gateway Layer"]
+        NOTE_GW["Laravel routing + middleware IS the entry point<br/>NOT PRESENT: Kong / AWS API Gateway / nginx tier"]
+    end
+
+    subgraph APPSVC["Application Services — Laravel 10 Monolith"]
+        RIDERAPI["Rider API Module"]
+        DRIVERAPI["Driver API Module"]
+        COMMONAPI["Common API Module"]
+        ADMINWEB["SysAdmin / Company / Operator Web"]
+    end
+
+    subgraph SUB["Subservices - In-process Modules"]
+        AI["AI & Analytics Engine<br/><b>NOT PRESENT</b>"]
+        LOC["Real-time Location Service"]
+        DISPATCH["Dispatch & Routing"]
+        SUPPORT["Support & Complaints"]
+        DATA["Data Processing & Storage"]
+    end
+
+    subgraph CLOUD["Cloud / Hosting Layer"]
+        HOST["Docker Compose - Self-managed"]
+        DB[("MariaDB 11.4")]
+        REDIS[("Redis 7")]
+        WS["Laravel WebSockets"]
+    end
+
+    RIDER --> RIDERAPP
+    DRIVER --> DRIVERAPP
+    COMPANY --> WEBADMIN
+    RIDERAPP --> ENTRY
+    DRIVERAPP --> ENTRY
+    WEBADMIN --> ENTRY
+    ENTRY --> RIDERAPI & DRIVERAPI & COMMONAPI
+    RIDERAPI & DRIVERAPI & COMMONAPI --> LOC & DISPATCH & SUPPORT & DATA
+    LOC & DISPATCH & SUPPORT & DATA --> HOST
+    HOST --> DB & REDIS & WS
+                </div>
+            </div>
+            <div class="info-box"><strong>Key Point:</strong> This is a role-partitioned monolith with dedicated API endpoints for Rider, Driver, and Company roles — all served from one Laravel application.</div>
+        </section>
+
+        <!-- Section 4: Two Booking Domains -->
+        <section id="section-4" class="toc-section">
+            <h2>4. The Two Booking Domains</h2>
+            <p>Both domains share the same auth, tenant, notification, and payment infrastructure. They differ in what is being fulfilled: a <em>ride</em> vs. a <em>service order</em>.</p>
+
+            <h3>4.1 Vehicle (Taxi) Booking — Dispatch Flow</h3>
+            <div class="diagram-wrapper">
+                <div class="mermaid">
+sequenceDiagram
+    participant Rider as Rider App
+    participant API as Rider API
+    participant Job as FindDriverJob
+    participant Redis as Redis
+    participant WS as WebSocket
+    participant DriverApp as Driver App
+
+    Rider->>API: Request ride
+    API->>Job: Dispatch FindDriverJob
+    Job->>Redis: Start search (0-2km)
+    Job->>WS: broadcast (searching)
+    Note over Job: Wait 30s for acceptance
+    Job->>Job: Expand to 2-5km
+    Job->>WS: broadcast (expanding_search)
+    Job->>Job: Expand to 5-10km
+    DriverApp->>API: POST Accept
+    API->>Redis: Acquire lock booking:accept:{rideID}
+    alt Already taken
+        API->>WS: reject this driver
+    else First valid
+        API->>WS: broadcast driver_assigned
+    end
+                </div>
+            </div>
+            <p><strong>Key implementation facts:</strong></p>
+            <ul>
+                <li>Radius expansion: <strong>0–2km → 2–5km → 5–10km</strong>, each stage waits up to 30 seconds</li>
+                <li>Concurrent-acceptance race resolved with <strong>Redis lock</strong> (<code>booking:accept:{rideID}</code>)</li>
+                <li>All progress pushed over WebSocket channel <code>private-rider-driver-finding-{rideID}</code></li>
+            </ul>
+
+            <h3>4.2 Service Booking — Order Flow</h3>
+            <div class="diagram-wrapper">
+                <div class="mermaid">
+sequenceDiagram
+    participant Rider as Rider App
+    participant API as Rider API
+    participant DB as MariaDB
+    participant Job as FindNearbyServiceDriversJob
+    participant WS as WebSocket
+    participant DriverApp as Driver App
+    participant Stripe as Stripe
+
+    Rider->>API: Browse/cart → POST /orders
+    API->>DB: Create order (searching)
+    API->>Job: Dispatch search job
+    Job->>WS: notify nearby drivers
+    DriverApp->>API: POST accept
+    API->>DB: Assign driver
+    DriverApp->>API: POST start
+    API->>DB: Generate start OTP
+    API->>WS: broadcast OTP to rider
+    Rider->>DriverApp: Verify OTP verbally
+    DriverApp->>API: POST verify-start-otp
+    DriverApp->>API: POST complete
+    API->>DB: Generate completion OTP
+    DriverApp->>API: POST verify-complete-otp
+    DriverApp->>API: POST payment
+    alt Cash
+        API->>DB: status: done
+    else Online
+        API->>Stripe: Create PaymentIntent
+        Rider->>Stripe: Confirm payment
+        Stripe->>API: Webhook
+        API->>DB: status: done
+    end
+                </div>
+            </div>
+            <p><strong>Additional capability:</strong> Drivers can register additional services on-site (<code>/driver/service-orders/{id}/additional-services</code>), each with OTP verification.</p>
+        </section>
+
+        <!-- Section 5: Application Services -->
+        <section id="section-5" class="toc-section">
+            <h2>5. Application Services — Module Breakdown</h2>
+            <p>The Laravel monolith is organized by role under <code>app/Http/Controllers/</code>:</p>
+            <table>
+                <tr>
+                    <th>Module</th>
+                    <th>Path</th>
+                    <th>Scope</th>
+                </tr>
+                <tr>
+                    <td>Rider API</td>
+                    <td><code>Api/Rider/</code></td>
+                    <td>Cart, orders, addresses, payments, scheduled rides, vehicle types</td>
+                </tr>
+                <tr>
+                    <td>Driver API</td>
+                    <td><code>Api/Driver/</code></td>
+                    <td>Online/offline, KYC, documents, bank accounts, service orders, vehicle, withdrawals</td>
+                </tr>
+                <tr>
+                    <td>Common API</td>
+                    <td><code>Api/Common/</code></td>
+                    <td>Auth, OTP, profile, address, categories, acceptance</td>
+                </tr>
+                <tr>
+                    <td>Company (Partner Admin)</td>
+                    <td><code>Company/</code></td>
+                    <td>Driver/rider management, KYC, pricing, analytics, payments, reports (~50 controllers)</td>
+                </tr>
+                <tr>
+                    <td>Operator</td>
+                    <td><code>Operator/</code></td>
+                    <td>Scoped version: drivers, riders, scheduled rides (no tenant-wide config)</td>
+                </tr>
+                <tr>
+                    <td>SysAdmin</td>
+                    <td><code>SysAdmin/</code></td>
+                    <td>Platform-wide administration, tenant management, mirrors Company controllers</td>
+                </tr>
+            </table>
+            <p>This is a <strong>role-partitioned monolith</strong>, not domain microservices: all roles are controller namespaces inside one deployable app, sharing one database.</p>
+        </section>
+
+        <!-- Section 6: Subservices -->
+        <section id="section-6" class="toc-section">
+            <h2>6. Subservices — What Exists vs. What Doesn't</h2>
+            <table>
+                <tr>
+                    <th>Subservice</th>
+                    <th>Status</th>
+                    <th>What Actually Exists</th>
+                </tr>
+                <tr>
+                    <td>AI & Analytics Engine</td>
+                    <td><span class="badge badge-absent">NOT PRESENT</span></td>
+                    <td>No AI/ML models found. Analytics controllers exist: compute revenue, ride-status, assigned-vs-missed via SQL aggregation only.</td>
+                </tr>
+                <tr>
+                    <td>Real-time Location Service</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                    <td><code>DriverLocation</code> model, <code>DriverHeartbeat</code> / <code>DriverOnline</code> / <code>DriverOffline</code> events, self-hosted Laravel WebSockets server (Pusher-protocol compatible).</td>
+                </tr>
+                <tr>
+                    <td>Dispatch & Routing</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                    <td><code>FindDriverJob</code> (rides) & <code>FindNearbyServiceDriversJob</code> (service orders) — expanding-radius search via Redis + <code>tarfin-labs/laravel-spatial</code> for geospatial queries. Google Maps API for distance/ETA.</td>
+                </tr>
+                <tr>
+                    <td>Customer & Admin Support</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                    <td><code>FeedbackAndComplaints</code> model, complaint/review controllers, report/export (Excel/PDF). Admin-dashboard-driven, not a ticketing platform.</td>
+                </tr>
+                <tr>
+                    <td>Data Processing & Storage</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                    <td>MariaDB 11.4 (spatial), Redis 7 (cache/queue/locking), local disk (default), AWS S3 (available as option).</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Section 7: Cloud & Hosting -->
+        <section id="section-7" class="toc-section">
+            <h2>7. Cloud / Hosting Layer</h2>
+            <div class="diagram-wrapper">
+                <div class="mermaid">
+flowchart LR
+    subgraph HOST["Self-managed Docker Host / VM"]
+        APP["app container<br/>PHP 8.2-FPM<br/>:8000"]
+        WS["websockets container<br/>:6001 SSL"]
+        REDIS[("redis:7-alpine<br/>:6379")]
+        DB[("mariadb:11.4<br/>:3306")]
+        ADMINER["adminer<br/>127.0.0.1:8080"]
+    end
+    CERT["Let's Encrypt certs<br/>amb.zcodia.in"]
+
+    APP --> DB
+    APP --> REDIS
+    WS --> REDIS
+    CERT -.-> APP
+    CERT -.-> WS
+                </div>
+            </div>
+            <div class="warning-box"><strong>Not present/not confirmed:</strong> container orchestration (K8s), auto-scaling, managed database, CDN, load balancer, zero-downtime deployments, staging/prod separation beyond <code>.env</code>.</div>
+            <p>Current setup is <strong>single-host Docker Compose</strong> — appropriate for current stage, but scaling/HA plan would need separate definition.</p>
+        </section>
+
+        <!-- Section 8: Security & Monitoring -->
+        <section id="section-8" class="toc-section">
+            <h2>8. Security & Monitoring Layer</h2>
+            <table>
+                <tr>
+                    <th>Concern</th>
+                    <th>Implementation</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>Authentication</td>
+                    <td>Laravel Sanctum (bearer token), separate flows for Rider/Driver</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Authorization</td>
+                    <td>Dedicated middleware per role: <code>RiderApiMiddleware</code>, <code>DriverApiMiddleware</code>, <code>CompanyMiddleware</code>, <code>OperatorMiddleware</code>, <code>SystemAdminMiddleware</code></td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Multi-tenancy isolation</td>
+                    <td><code>IdentifyTenant</code> middleware, resolved from subdomain</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Payment security</td>
+                    <td>Stripe webhook handler validates signature</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>CSRF / cookie security</td>
+                    <td>Laravel <code>VerifyCsrfToken</code>, <code>EncryptCookies</code>, <code>TrustHosts</code>, <code>TrustProxies</code></td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>API documentation security</td>
+                    <td><code>darkaonline/l5-swagger</code> installed, but <strong>zero <code>@OA</code> annotations exist</strong> — no Swagger UI available</td>
+                    <td><span class="badge badge-unused">INSTALLED BUT UNUSED</span></td>
+                </tr>
+                <tr>
+                    <td>Application monitoring / APM</td>
+                    <td>—</td>
+                    <td><span class="badge badge-absent">NOT PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Centralized logging</td>
+                    <td>—</td>
+                    <td><span class="badge badge-absent">NOT PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Automated security scanning / WAF</td>
+                    <td>—</td>
+                    <td><span class="badge badge-absent">NOT PRESENT</span></td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Section 9: Special Modules -->
+        <section id="section-9" class="toc-section">
+            <h2>9. Special Modules</h2>
+            <table>
+                <tr>
+                    <th>Module</th>
+                    <th>Status</th>
+                    <th>Detail</th>
+                </tr>
+                <tr>
+                    <td>Scheduled Rides</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                    <td><code>PostSchedule</code> & <code>SendRiderScheduleNotification</code> jobs, <code>DriverSchedules</code>/<code>RiderSchedules</code> models, dedicated cancel/list endpoints.</td>
+                </tr>
+                <tr>
+                    <td>Push Notifications</td>
+                    <td><span class="badge badge-present">PRESENT</span></td>
+                    <td>Firebase Cloud Messaging via <code>kreait/laravel-firebase</code>, <code>FCMNotification</code> model, broadcast to user groups.</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Section 10: API Surface -->
+        <section id="section-10" class="toc-section">
+            <h2>10. API Surface (Current)</h2>
+            <p>Living, tested API reference exists in <code>APIs/</code> request collections:</p>
+            <table>
+                <tr>
+                    <th>Area</th>
+                    <th>Files</th>
+                    <th>Endpoint Count</th>
+                </tr>
+                <tr>
+                    <td>Rider — Auth</td>
+                    <td><code>auth_apis.http</code></td>
+                    <td>~25</td>
+                </tr>
+                <tr>
+                    <td>Rider — Scheduled rides</td>
+                    <td><code>rider_scheduled_rides.http</code>, <code>rider_schedule_full_flow.http</code></td>
+                    <td>~29</td>
+                </tr>
+                <tr>
+                    <td>Rider — Orders / Cart / Services</td>
+                    <td><code>rider_orders.http</code>, <code>rider_cart.http</code>, <code>rider_services.http</code>, <code>rider_categories.http</code></td>
+                    <td>~27</td>
+                </tr>
+                <tr>
+                    <td>Driver — Core flow</td>
+                    <td><code>driver.http</code>, <code>driver.v1.http</code>, <code>driver_flow.http</code></td>
+                    <td>~93</td>
+                </tr>
+                <tr>
+                    <td>Driver — Service orders</td>
+                    <td><code>driver_service_orders.http</code>, <code>driver_additional_services.http</code>, <code>driver_services.http</code>, <code>driver_categories.http</code></td>
+                    <td>~30</td>
+                </tr>
+                <tr>
+                    <td>Driver — Account</td>
+                    <td><code>driver-change-password.http</code>, <code>driver-forgot-password.http</code></td>
+                    <td>~6</td>
+                </tr>
+                <tr>
+                    <td>Admin</td>
+                    <td><code>service_state_prices.http</code></td>
+                    <td>~4</td>
+                </tr>
+            </table>
+            <div class="info-box">Narrative API reference for <strong>Service Booking</strong> exists at <code>docs/service-booking-integration-guide.md</code> — authoritative for that domain. <strong>Vehicle Booking API documentation</strong> does not yet exist as a narrative guide.</div>
+            <p><strong>Machine-readable OpenAPI output:</strong> NOT CURRENTLY AVAILABLE — main gap for formal importable API spec (Postman/SwaggerUI).</p>
+        </section>
+
+        <!-- Section 11: Technology Stack -->
+        <section id="section-11" class="toc-section">
+            <h2>11. Technology Stack (Verified)</h2>
+            <table>
+                <tr>
+                    <th>Layer</th>
+                    <th>Technology</th>
+                </tr>
+                <tr>
+                    <td>Language / Framework</td>
+                    <td>PHP 8.2, Laravel 10.10</td>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>MariaDB 11.4, with spatial queries via <code>tarfin-labs/laravel-spatial</code></td>
+                </tr>
+                <tr>
+                    <td>Cache / Queue / Locking</td>
+                    <td>Redis 7</td>
+                </tr>
+                <tr>
+                    <td>Real-time</td>
+                    <td><code>beyondcode/laravel-websockets</code> (self-hosted, Pusher-protocol compatible)</td>
+                </tr>
+                <tr>
+                    <td>Authentication</td>
+                    <td>Laravel Sanctum (token-based)</td>
+                </tr>
+                <tr>
+                    <td>Payments</td>
+                    <td>Stripe (<code>stripe/stripe-php</code>)</td>
+                </tr>
+                <tr>
+                    <td>Push notifications</td>
+                    <td>Firebase Cloud Messaging (<code>kreait/laravel-firebase</code>)</td>
+                </tr>
+                <tr>
+                    <td>File export</td>
+                    <td><code>maatwebsite/excel</code>, <code>barryvdh/laravel-dompdf</code></td>
+                </tr>
+                <tr>
+                    <td>Maps / distance</td>
+                    <td>Google Maps API (server-side)</td>
+                </tr>
+                <tr>
+                    <td>Admin UI</td>
+                    <td>Laravel Blade + Bootstrap (server-rendered)</td>
+                </tr>
+                <tr>
+                    <td>Containerization</td>
+                    <td>Docker, Docker Compose</td>
+                </tr>
+                <tr>
+                    <td>API docs tooling</td>
+                    <td><code>darkaonline/l5-swagger</code> (installed, not populated)</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Section 12: Functional Descriptions -->
+        <section id="section-12" class="toc-section">
+            <h2>12. General Platform Presentation & Functional Descriptions</h2>
+            <p>Platform capabilities described in functional/product terms — what each user type can actually do — independent of implementation.</p>
+
+            <h3>12.1 Platform Overview</h3>
+            <p>The platform is a <strong>multi-tenant SaaS system</strong>: each partner company operates its own branded instance (own subdomain, drivers, service catalog, pricing) on shared infrastructure. Within each tenant, two booking businesses run side by side:</p>
+            <ul>
+                <li><strong>Vehicle Booking</strong> — on-demand taxi/ride-hailing service</li>
+                <li><strong>Service Booking</strong> — on-demand home/field-service marketplace (e.g. plumbing, electrical, ambulance, medical support)</li>
+            </ul>
+            <p>Five distinct actor types: <strong>Rider, Driver/Service Provider, Company (Partner) Admin, Operator, Platform SysAdmin</strong>.</p>
+
+            <h3>12.2 Rider — Functional Capabilities</h3>
+            <ul>
+                <li>Register and log in (email/mobile + password); verify via email and SMS OTP</li>
+                <li>Manage profile, saved addresses, profile photo</li>
+                <li>Browse available vehicle types and facilities (AC, luggage capacity)</li>
+                <li>Browse service categories, subcategories, and services</li>
+                <li>Get instant distance-and-fare estimate before booking</li>
+                <li>Request ride and track search in real time (progressive radius expansion with live updates)</li>
+                <li>Add services to cart, adjust quantities, check out as order</li>
+                <li>Track ride/order lifecycle in real time (searching → assigned → in progress → completed)</li>
+                <li>Schedule rides in advance; view or cancel scheduled rides</li>
+                <li>Verify service start and completion using driver-entered OTP codes</li>
+                <li>Pay by cash or card (Stripe)</li>
+                <li>Leave reviews; raise complaints</li>
+                <li>View rider credit/wallet balance and history</li>
+            </ul>
+
+            <h3>12.3 Driver / Service Provider — Functional Capabilities</h3>
+            <ul>
+                <li>Register, log in, password-reset independent of rider</li>
+                <li>Go online/offline; send periodic heartbeat/location updates</li>
+                <li>Complete KYC: upload identity/license documents; track approval and expiry</li>
+                <li>Register one or more vehicles; link bank account for payouts</li>
+                <li>Set which service categories/subcategories they are qualified for</li>
+                <li>Receive and accept/decline ride and service-order requests as dispatched</li>
+                <li>Update ride status through trip lifecycle (arrived, started, completed)</li>
+                <li>For service orders: start (generate rider OTP), complete (generate second OTP), register additional on-site services (independently OTP-verified)</li>
+                <li>Select payment method (cash or online) at end of ride/order</li>
+                <li>View and manage schedules and appointments</li>
+                <li>Request withdrawals of accumulated earnings</li>
+                <li>View reviews; file and track complaints</li>
+            </ul>
+
+            <h3>12.4 Company (Partner) Admin — Functional Capabilities</h3>
+            <p>Run one tenant's entire operation from a web dashboard:</p>
+            <ul>
+                <li>Manage driver roster: onboarding, KYC approval, document/license expiry tracking, vehicle assignment, bank details, service-category mapping</li>
+                <li>Manage rider base: profiles, addresses, credits/wallet adjustments, complaint handling</li>
+                <li>Define service catalog: categories, subcategories, services, facility items</li>
+                <li>Configure pricing: vehicle pricing, service pricing (state-wise)</li>
+                <li>Configure operating geography: zones, neighborhoods, state-level settings</li>
+                <li>Configure tax rules and payment settings</li>
+                <li>Review and moderate driver and rider reviews and complaints</li>
+                <li>Track and manage scheduled rides across driver fleet</li>
+                <li>Send push notifications (individual or by group); manage notification group membership</li>
+                <li>Customize email templates for tenant communications</li>
+                <li>View operational analytics: revenue trends, ride-status breakdowns, insights map, assigned-vs-missed, completed-vs-canceled</li>
+                <li>Generate and export reports (Excel/PDF)</li>
+                <li>Manage payments and driver withdrawal requests</li>
+                <li>Manage operator accounts working under them</li>
+            </ul>
+
+            <h3>12.5 Operator — Functional Capabilities</h3>
+            <p>Scoped-down version of Company Admin for day-to-day staff:</p>
+            <ul>
+                <li>Manage drivers, driver vehicles, riders, rider credits, scheduled rides</li>
+                <li>NO access to tenant-wide configuration (pricing, taxes, zones, categories)</li>
+            </ul>
+
+            <h3>12.6 Platform SysAdmin — Functional Capabilities</h3>
+            <p>Operate above all tenants; mirror nearly every Company Admin capability at platform scope:</p>
+            <ul>
+                <li>Onboard and manage companies/tenants (customers of platform)</li>
+                <li>Perform driver, rider, KYC, complaint, review, pricing, zone, tax, notification management across any tenant</li>
+                <li>Manage platform-wide payments and bank lists</li>
+                <li>View platform-wide analytics and reports</li>
+            </ul>
+
+            <h3>12.7 Shared, Cross-Cutting Functionality</h3>
+            <ul>
+                <li>Real-time updates over WebSocket for ride search, order status, driver location/heartbeat</li>
+                <li>Push notifications (Firebase Cloud Messaging)</li>
+                <li>Stripe-based online payments alongside cash</li>
+                <li>Multi-tenant isolation — every tenant's data, drivers, riders scoped to that tenant's subdomain only</li>
+            </ul>
+        </section>
+
+        <!-- Section 13: Network & Technical Architecture -->
+        <section id="section-13" class="toc-section">
+            <h2>13. Network & Technical Architecture Specifications</h2>
+
+            <h3>13.1 Network Topology Diagram</h3>
+            <div class="diagram-wrapper">
+                <div class="mermaid">
+flowchart TB
+    subgraph INTERNET["Internet"]
+        MOBAPPS["Rider / Driver Mobile Apps"]
+        BROWSER["Admin Browsers"]
+    end
+
+    subgraph THIRDPARTY["Third-Party Dependencies"]
+        STRIPE["Stripe API<br/>HTTPS outbound + webhook"]
+        GMAPS["Google Maps API<br/>HTTPS outbound"]
+        FCM["Firebase Cloud Messaging<br/>HTTPS outbound"]
+        MAILSVC["Mail Provider<br/>Mailgun / Postmark / SES"]
+    end
+
+    subgraph HOSTVM["Self-Managed Host / VM"]
+        subgraph DOCKERNET["Docker Network"]
+            APP["app container<br/>:8000 HTTP"]
+            WS["websockets container<br/>:6001 WSS"]
+            REDIS[("redis:7<br/>:6379")]
+            DB[("mariadb:11.4<br/>:3306")]
+            ADMINER["adminer :8080"]
+        end
+        CERTS["Let's Encrypt<br/>amb.zcodia.in"]
+    end
+
+    MOBAPPS -->|"HTTP :8000 /api/*"| APP
+    MOBAPPS -->|"WSS :6001"| WS
+    BROWSER -->|"HTTP :8000"| APP
+    BROWSER -.->|"127.0.0.1:8080"| ADMINER
+
+    APP <--> DB
+    APP <--> REDIS
+    WS <--> REDIS
+    CERTS -.-> WS
+
+    APP -->|"HTTPS"| STRIPE
+    STRIPE -.->|"webhook"| APP
+    APP -->|"HTTPS"| GMAPS
+    APP -->|"HTTPS"| FCM
+    APP -->|"HTTPS/SMTP"| MAILSVC
+                </div>
+            </div>
+            <div class="danger-box"><strong>Security note:</strong> Database (3306) and Redis (6379) are published to all interfaces with no host-interface restriction — unlike Adminer (127.0.0.1:8080 only).</div>
+
+            <h3>13.2 Ports & Protocols</h3>
+            <table>
+                <tr>
+                    <th>Port</th>
+                    <th>Protocol</th>
+                    <th>Service</th>
+                    <th>Host Exposure</th>
+                </tr>
+                <tr>
+                    <td>8000</td>
+                    <td>HTTP</td>
+                    <td><code>app</code> — API + admin web routes</td>
+                    <td>Published to all interfaces</td>
+                </tr>
+                <tr>
+                    <td>6001</td>
+                    <td>WSS (TLS enabled)</td>
+                    <td><code>websockets</code> — Laravel WebSockets</td>
+                    <td>Published to all interfaces</td>
+                </tr>
+                <tr>
+                    <td>3306</td>
+                    <td>MySQL wire protocol</td>
+                    <td><code>mariadb</code></td>
+                    <td>Published to all interfaces</td>
+                </tr>
+                <tr>
+                    <td>6379</td>
+                    <td>Redis protocol</td>
+                    <td><code>redis</code></td>
+                    <td>Published to all interfaces</td>
+                </tr>
+                <tr>
+                    <td>8080</td>
+                    <td>HTTP</td>
+                    <td><code>adminer</code> (DB admin UI)</td>
+                    <td>Bound to 127.0.0.1 only</td>
+                </tr>
+            </table>
+
+            <h3>13.3 TLS / Certificate Scope</h3>
+            <ul>
+                <li>Certificate is single-domain: <code>CN=amb.zcodia.in</code>, no wildcard or additional SANs</li>
+                <li><strong>WebSockets server (port 6001) DOES</strong> terminate TLS explicitly (<code>websockets:serve --ssl</code>)</li>
+                <li><strong>Main application (port 8000) DOES NOT</strong> — runs <code>php artisan serve</code> with no SSL flag. HTTPS for API/admin routes is handled by an external reverse proxy/load balancer (NOT PRESENT in this repo)</li>
+                <li>Multi-tenant routing pattern (<code>{company}.<main_domain}</code>) requires wildcard subdomain resolution. Certificate is single-domain — production wildcard/multi-SAN certificate coverage should be confirmed separately</li>
+            </ul>
+
+            <h3>13.4 DNS & Multi-Tenant Domain Routing</h3>
+            <ul>
+                <li>Each tenant accessed via <code>{company}.amb.zcodia.in</code> (or equivalent domain)</li>
+                <li><code>IdentifyTenant</code> middleware extracts company subdomain and scopes all queries to that tenant</li>
+                <li>For production: wildcard DNS record (<code>*.amb.zcodia.in</code>) should point to the host; wildcard TLS certificate should cover all subdomains</li>
+            </ul>
+
+            <h3>13.5 Internal Service Communication Paths</h3>
+            <ul>
+                <li><strong>API → Database:</strong> Direct SQL queries via Laravel's database layer (PDO/MySQL wire protocol on port 3306)</li>
+                <li><strong>API → Redis:</strong> Cache queries, queue job dispatch, distributed locking (port 6379)</li>
+                <li><strong>API → WebSocket server:</strong> Broadcasting via <code>pusher</code> channel (configured to connect to same host on port 6001)</li>
+                <li><strong>Queue workers:</strong> Read jobs from Redis; fetch job-specific data from database; may publish events to WebSocket</li>
+            </ul>
+
+            <h3>13.6 External Third-Party Dependencies</h3>
+            <table>
+                <tr>
+                    <th>Service</th>
+                    <th>Purpose</th>
+                    <th>API Calls</th>
+                </tr>
+                <tr>
+                    <td>Stripe</td>
+                    <td>Payment processing, PaymentIntent creation, webhook signature verification</td>
+                    <td>Outbound (API) + Inbound (webhook)</td>
+                </tr>
+                <tr>
+                    <td>Google Maps</td>
+                    <td>Distance Matrix (ride fare estimation), Geocoding (address lookup)</td>
+                    <td>Outbound (API)</td>
+                </tr>
+                <tr>
+                    <td>Firebase Cloud Messaging</td>
+                    <td>Push notifications to rider/driver apps</td>
+                    <td>Outbound (API)</td>
+                </tr>
+                <tr>
+                    <td>Mail Provider</td>
+                    <td>Email delivery (Mailgun / Postmark / SES configured as options)</td>
+                    <td>Outbound (SMTP or API)</td>
+                </tr>
+            </table>
+
+            <h3>13.7 Queue and Asynchronous Processing</h3>
+            <ul>
+                <li><strong>Job dispatcher:</strong> API routes dispatch jobs into Redis queue</li>
+                <li><strong>Queue worker:</strong> Separate Laravel process (or containerized) runs <code>php artisan queue:work</code>, consuming jobs from Redis</li>
+                <li><strong>Example jobs:</strong> <code>FindDriverJob</code> (search for drivers), <code>SendRiderScheduleNotification</code> (scheduled ride reminders), <code>PushNotification</code> (broadcast messages), <code>GenerateReport</code> (export Excel/PDF)</li>
+            </ul>
+
+            <h3>13.8 CORS Policy Configuration</h3>
+            <ul>
+                <li>Configured in <code>config/cors.php</code> (Laravel default)</li>
+                <li>Mobile apps and web admin are same-origin as backend (via subdomain or internal network), so CORS is typically permissive or not strictly enforced</li>
+                <li>Third-party integrations (if any) would need explicit allowed origins</li>
+            </ul>
+
+            <h3>13.9 Authentication Token Flow</h3>
+            <ul>
+                <li><strong>Registration:</strong> Rider / Driver POST to <code>/api/{rider|driver}/register</code>, receives bearer token</li>
+                <li><strong>Login:</strong> POST to <code>/api/{rider|driver}/login</code>, returns bearer token</li>
+                <li><strong>Bearer token in requests:</strong> Mobile apps send <code>Authorization: Bearer {token}</code> header on all protected endpoints</li>
+                <li><strong>Token storage:</strong> Stored in Laravel's <code>personal_access_tokens</code> table (encrypted in database)</li>
+                <li><strong>Token expiry:</strong> Not explicitly configured in codebase — Laravel Sanctum tokens are persistent by default unless revoked or cleared</li>
+            </ul>
+
+            <h3>13.10 Equipment and Hosting Specifications</h3>
+            <ul>
+                <li><strong>Host VM specs:</strong> Not documented in repo; assumed to be a single Linux VM (possibly AWS EC2, DigitalOcean, Linode, or on-prem)</li>
+                <li><strong>Containerization:</strong> All services run inside Docker containers orchestrated by Docker Compose</li>
+                <li><strong>PHP container:</strong> PHP 8.2-FPM base, with Laravel application code mounted as volume</li>
+                <li><strong>Database container:</strong> MariaDB 11.4 with persistent volume for data storage</li>
+                <li><strong>Redis container:</strong> redis:7-alpine with 256MB memory limit (configured in <code>docker-compose.yml</code>)</li>
+                <li><strong>WebSocket container:</strong> Separate PHP 8.2-FPM instance running <code>artisan websockets:serve</code></li>
+                <li><strong>Scaling:</strong> No orchestration — to scale, would need manual Docker Compose expansion or migration to Kubernetes</li>
+            </ul>
+
+            <h3>13.11 Compliance and Data Processing</h3>
+            <ul>
+                <li><strong>Data residency:</strong> Not documented; data is stored in MariaDB on the host VM, location depends on where VM is hosted</li>
+                <li><strong>Encryption at rest:</strong> Depends on host VM's storage setup; not configured at database level in this repo</li>
+                <li><strong>Encryption in transit:</strong> TLS on port 6001 (WebSocket); port 8000 (app) depends on external reverse proxy (NOT PRESENT in repo); internal Docker communication is unencrypted</li>
+                <li><strong>PII handling:</strong> Rider/driver personal data (name, phone, address, KYC documents) are stored in database; no explicit PII anonymization or retention policies documented</li>
+                <li><strong>Payment data:</strong> Stripe handles payment processing; application does not store card details (PCI compliance is Stripe's responsibility)</li>
+            </ul>
+        </section>
+
+        <!-- Section 14: Production Best Practices -->
+        <section id="section-14" class="toc-section">
+            <h2>14. Production Hosting Best Practices (Recommendations)</h2>
+            <table>
+                <tr>
+                    <th>Concern</th>
+                    <th>Recommendation</th>
+                </tr>
+                <tr>
+                    <td>Reverse Proxy / Load Balancer</td>
+                    <td>Place an nginx, HAProxy, or cloud load balancer (AWS ALB/NLB) in front of port 8000; terminate HTTPS there; route to app container.</td>
+                </tr>
+                <tr>
+                    <td>TLS Certificates</td>
+                    <td>Use wildcard certificate covering <code>*.amb.zcodia.in</code> for multi-tenant support. Automate renewal with Let's Encrypt / certbot.</td>
+                </tr>
+                <tr>
+                    <td>Database Backup & Recovery</td>
+                    <td>Automated daily backups (mysqldump or snapshots); test restore procedure; keep backups off-site.</td>
+                </tr>
+                <tr>
+                    <td>Redis Persistence</td>
+                    <td>Enable RDB snapshots or AOF (Append-Only File) for Redis; consider separate Redis instance for cache vs. queue for fault isolation.</td>
+                </tr>
+                <tr>
+                    <td>Monitoring & Alerting</td>
+                    <td>Deploy APM (e.g. New Relic, Datadog, Sentry); set up alerts for high error rates, response time degradation, and infrastructure health.</td>
+                </tr>
+                <tr>
+                    <td>Logging Aggregation</td>
+                    <td>Ship application and container logs to centralized logging (e.g. ELK, Splunk, CloudWatch); enable log rotation locally to avoid disk filling.</td>
+                </tr>
+                <tr>
+                    <td>Database Indexing & Query Optimization</td>
+                    <td>Profile queries; ensure key indices exist on foreign keys, timestamps, and search columns (e.g. <code>driver_id</code>, <code>ride_id</code>, <code>created_at</code>).</td>
+                </tr>
+                <tr>
+                    <td>Container Registry & CI/CD</td>
+                    <td>Build and push images to a private registry (Docker Hub, ECR, etc.); automate deployment via CI/CD pipeline (GitHub Actions, GitLab CI, Jenkins).</td>
+                </tr>
+                <tr>
+                    <td>Environment Secrets Management</td>
+                    <td>Use a secrets management tool (HashiCorp Vault, AWS Secrets Manager, etc.) instead of .env files in version control.</td>
+                </tr>
+                <tr>
+                    <td>Auto-Scaling & Failover</td>
+                    <td>Consider container orchestration (Kubernetes, ECS) if anticipating high traffic spikes or requiring multi-region failover.</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Section 15: Cybersecurity RBAC -->
+        <section id="section-15" class="toc-section">
+            <h2>15. Cybersecurity & Role-Based Access Control (RBAC)</h2>
+
+            <h3>15.1 RBAC Implementation</h3>
+            <p>The platform enforces five distinct roles, each with dedicated middleware and route scoping:</p>
+            <table>
+                <tr>
+                    <th>Role</th>
+                    <th>Middleware Class</th>
+                    <th>Route Namespace</th>
+                    <th>Capabilities</th>
+                </tr>
+                <tr>
+                    <td>Rider</td>
+                    <td><code>RiderApiMiddleware</code></td>
+                    <td><code>/api/rider/</code></td>
+                    <td>Request rides, order services, view history, manage addresses, pay orders</td>
+                </tr>
+                <tr>
+                    <td>Driver</td>
+                    <td><code>DriverApiMiddleware</code></td>
+                    <td><code>/api/driver/</code></td>
+                    <td>Accept/decline rides, update ride status, manage documents, request withdrawals</td>
+                </tr>
+                <tr>
+                    <td>Company Admin</td>
+                    <td><code>CompanyMiddleware</code></td>
+                    <td><code>/company/</code></td>
+                    <td>Manage drivers/riders, configure pricing/zones, view analytics, process payments</td>
+                </tr>
+                <tr>
+                    <td>Operator</td>
+                    <td><code>OperatorMiddleware</code></td>
+                    <td><code>/operator/</code></td>
+                    <td>Manage drivers/riders/scheduled rides (no tenant-wide config)</td>
+                </tr>
+                <tr>
+                    <td>Platform SysAdmin</td>
+                    <td><code>SystemAdminMiddleware</code></td>
+                    <td><code>/sysadmin/</code></td>
+                    <td>Onboard tenants, manage across all tenants, platform-wide analytics</td>
+                </tr>
+            </table>
+
+            <h3>15.2 Enforcement Mechanisms</h3>
+            <ul>
+                <li><strong>Middleware guard:</strong> Each role's middleware checks the authenticated user's role and grants or denies access to that role's routes</li>
+                <li><strong>Tenant isolation:</strong> <code>IdentifyTenant</code> middleware resolves tenant from subdomain; all queries are scoped to that tenant's ID</li>
+                <li><strong>Resource authorization:</strong> Controller methods verify that the authenticated user owns/is associated with the resource being accessed (e.g. a rider can only view their own addresses)</li>
+                <li><strong>Token-based auth:</strong> All API endpoints (except public endpoints like login) require a valid bearer token; token is validated by <code>auth:sanctum</code> middleware</li>
+            </ul>
+
+            <h3>15.3 Security Implementation Status</h3>
+            <table>
+                <tr>
+                    <th>Security Area</th>
+                    <th>Implementation</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>Audit Logging</td>
+                    <td>Track who did what, when — logins, data modifications, payments</td>
+                    <td><span class="badge badge-absent">NOT PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Threat Monitoring / Incident Response</td>
+                    <td>Automated detection of suspicious activity (brute-force logins, SQL injection attempts, rate-limit violations)</td>
+                    <td><span class="badge badge-absent">NOT PRESENT</span></td>
+                </tr>
+                <tr>
+                    <td>Debug Mode in Production</td>
+                    <td><code>APP_DEBUG=true</code> in <code>.env</code> exposes stack traces and environment variables to error pages — <strong>SECURITY RISK if enabled in production</strong></td>
+                    <td><span class="danger-box" style="display:inline-block;">VERIFY OFF</span></td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Section 16: Disaster Recovery -->
+        <section id="section-16" class="toc-section">
+            <h2>16. Disaster Recovery Plan</h2>
+            <div class="danger-box"><strong>Critical Risk Statement:</strong> The current single-host Docker Compose deployment has no automated failover, no replica database, and no multi-region backup. If the host VM fails, the entire platform goes offline until the host is recovered or replaced. This is acceptable for development and early staging, but <strong>not suitable for production serving real users</strong>.</div>
+
+            <h3>16.1 Recommended DR Best Practices</h3>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>Practice</th>
+                    <th>Benefit</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Automated daily database backups to off-site object storage (AWS S3, Google Cloud Storage)</td>
+                    <td>Data recovery in case of database corruption or deletion; meet RTO/RPO targets</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Test database restore procedure quarterly</td>
+                    <td>Confirm backups are valid and restore can complete within RTO window</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Database replication (MariaDB primary-replica) or managed database service (AWS RDS, Google Cloud SQL)</td>
+                    <td>Automatic failover to replica if primary fails; zero data loss</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Redis persistence (RDB snapshots or AOF); back up snapshots off-site</td>
+                    <td>Recovery of in-flight jobs, locks, and cache state after restart</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Multi-region or multi-AZ deployment (e.g. AWS ECS on multiple AZs, or Kubernetes across regions)</td>
+                    <td>Survive host/AZ/region failure; automatic failover; no manual intervention</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Container image versioning and registry; rollback procedure documented</td>
+                    <td>Quick rollback to previous stable version if deployment introduces a bug</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Runbook for manual failover (standby host, data restore, DNS switch)</td>
+                    <td>Structured response in an emergency; reduces time to recovery</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Monitoring and alerting on database replication lag, backup success/failure, host health</td>
+                    <td>Early warning if DR infrastructure is degraded; time to fix before actual failure</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Document RTO (Recovery Time Objective) and RPO (Recovery Point Objective) targets; track compliance</td>
+                    <td>Align infrastructure investment with business continuity requirements</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Quarterly DR drill: simulate failure, execute recovery, verify services are online and data is consistent</td>
+                    <td>Catch gaps in runbooks, train operations team, build confidence in recovery procedure</td>
+                </tr>
+            </table>
+
+            <h3>16.2 Immediate Actions (Before Production Release)</h3>
+            <ul>
+                <li><strong>Establish backup strategy:</strong> Daily automated database backups to off-site storage; test restore at least once</li>
+                <li><strong>Enable debug mode off:</strong> Verify <code>APP_DEBUG=false</code> in production <code>.env</code></li>
+                <li><strong>Enable HTTPS for API:</strong> Place a reverse proxy (nginx/HAProxy) with wildcard TLS certificate in front of port 8000</li>
+                <li><strong>Document & review:</strong> Capture how the production host is set up; document steps to rebuild it from scratch</li>
+                <li><strong>Plan scaling:</strong> If expecting significant traffic growth, prototype migration to Kubernetes or managed container service</li>
+            </ul>
+        </section>
+
+        <footer style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #333; font-size: 12px; color: #666;">
+            <p><strong>Document Version:</strong> 1.0 | <strong>Last Updated:</strong> 2026-08-30</p>
+            <p>This document describes the <em>as-built</em> architecture of the Ambulance / Service Booking platform based on direct codebase inspection. All information is current at the time of writing. Anything explicitly marked as <span class="badge badge-absent">NOT PRESENT</span> has been verified as absent from the codebase.</p>
+        </footer>
+    </main>
+
+    <script>
+        // Mermaid initialization for interactive diagrams
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: { useMaxWidth: true },
+            securityLevel: 'loose'
+        });
+        mermaid.contentLoaded();
+
+        // Smooth scroll navigation
+        function scrollTo(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+        }
+
+        // Responsive sidebar toggle for mobile
+        const main = document.querySelector('.main');
+        const sidebar = document.querySelector('.sidebar');
+        if (window.innerWidth < 1024) {
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        }
+
+        // Intersection observer for active nav highlighting
+        const sections = document.querySelectorAll('[id^="section-"]');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navItems.forEach(item => item.classList.remove('active'));
+                    const activeItem = document.querySelector(`.nav-item[onclick*="${entry.target.id}"]`);
+                    if (activeItem) activeItem.classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>
