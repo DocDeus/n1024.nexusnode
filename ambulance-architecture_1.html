@@ -7,6 +7,24 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
     <style>
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --success: #059669;
+            --success-light: #10b981;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --danger-light: #ef4444;
+            --accent: #7c3aed;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-tertiary: #64748b;
+            --border: #e2e8f0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,8 +33,8 @@
 
         html, body {
             font-family: 'Syne', sans-serif;
-            background: #ffffff;
-            color: #1a1a1a;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--text-primary);
             line-height: 1.4;
             font-size: 14px;
         }
@@ -30,8 +48,8 @@
 
         /* Sidebar Navigation */
         .sidebar {
-            background: #f5f5f5;
-            border-right: 1px solid #e0e0e0;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-right: 3px solid var(--primary);
             padding: 20px 16px;
             position: sticky;
             top: 0;
@@ -44,151 +62,191 @@
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #333;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            color: white;
+            border-radius: 6px;
+            text-align: center;
+            letter-spacing: 0.5px;
         }
 
         .nav-group {
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .nav-group-title {
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            color: #666;
+            color: #94a3b8;
             margin-bottom: 8px;
             letter-spacing: 0.5px;
+            padding-left: 8px;
+            border-left: 3px solid var(--primary-light);
         }
 
         .nav-item {
-            padding: 6px 8px;
-            margin: 2px 0;
-            border-radius: 3px;
+            padding: 8px 10px;
+            margin: 3px 0;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             text-decoration: none;
-            color: #333;
+            color: #cbd5e1;
             display: block;
+            border-left: 3px solid transparent;
         }
 
         .nav-item:hover {
-            background: #e8e8e8;
-            padding-left: 12px;
+            background: rgba(59, 130, 246, 0.15);
+            border-left-color: var(--primary-light);
+            padding-left: 14px;
+            color: #e2e8f0;
         }
 
         .nav-item.active {
-            background: #333;
-            color: #fff;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2));
+            color: #60a5fa;
             font-weight: 600;
+            border-left-color: var(--primary-light);
         }
 
         /* Main Content */
         .main {
             padding: 24px 32px;
             overflow-y: auto;
-            background: #ffffff;
+            background: var(--bg-primary);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(30, 64, 175, 0.15);
         }
 
         h1 {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 8px;
-            color: #1a1a1a;
+            color: white;
         }
 
         .doc-meta {
             font-size: 12px;
-            color: #666;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e0e0e0;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0;
         }
 
         h2 {
             font-size: 20px;
             font-weight: 700;
-            margin: 20px 0 12px 0;
-            padding-top: 16px;
-            border-top: 2px solid #333;
-            color: #1a1a1a;
+            margin: 24px 0 12px 0;
+            padding: 12px 16px;
+            border-left: 5px solid var(--primary);
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        h2:hover {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+            transform: translateX(4px);
         }
 
         h3 {
             font-size: 15px;
             font-weight: 700;
-            margin: 12px 0 8px 0;
-            color: #222;
+            margin: 14px 0 8px 0;
+            color: var(--primary);
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--primary-light);
         }
 
         h4 {
             font-size: 13px;
             font-weight: 700;
             margin: 10px 0 6px 0;
-            color: #333;
+            color: var(--text-secondary);
         }
 
         p {
-            margin: 6px 0;
-            color: #333;
-            line-height: 1.5;
+            margin: 8px 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
         }
 
         ul, ol {
-            margin: 8px 0 8px 20px;
+            margin: 10px 0 10px 20px;
             padding-left: 0;
         }
 
         li {
-            margin: 3px 0;
-            color: #333;
-            line-height: 1.4;
+            margin: 4px 0;
+            color: var(--text-secondary);
+            line-height: 1.5;
         }
 
         /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 12px 0;
+            margin: 14px 0;
             font-size: 13px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid var(--border);
+            padding: 10px;
             text-align: left;
         }
 
         th {
-            background: #333;
-            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
             font-weight: 700;
             font-size: 12px;
         }
 
         tr:nth-child(even) {
-            background: #fafafa;
+            background: var(--bg-tertiary);
         }
 
         tr:hover {
-            background: #f0f0f0;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.05), transparent);
+            transition: background 0.2s ease;
         }
 
         /* Diagrams */
         .diagram-wrapper {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
             padding: 16px;
-            margin: 12px 0;
+            margin: 14px 0;
             overflow-x: auto;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .diagram-wrapper:hover {
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+            border-color: var(--primary-light);
         }
 
         .mermaid {
             display: flex;
             justify-content: center;
-            background: #ffffff;
-            border-radius: 3px;
+            background: white;
+            border-radius: 4px;
+            padding: 8px;
         }
 
         svg {
@@ -199,108 +257,134 @@
         /* Status Badges */
         .badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
+            padding: 4px 10px;
+            border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            margin: 0 2px;
+            margin: 0 3px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .badge-present {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #047857;
+            border: 1px solid var(--success);
         }
 
         .badge-absent {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 1px solid var(--danger);
         }
 
         .badge-unused {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #92400e;
+            border: 1px solid var(--warning);
         }
 
         /* Info/Warning Boxes */
         .info-box, .warning-box, .danger-box {
-            padding: 12px;
-            margin: 12px 0;
-            border-left: 4px solid;
-            border-radius: 3px;
+            padding: 14px;
+            margin: 14px 0;
+            border-left: 5px solid;
+            border-radius: 6px;
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         .info-box {
-            background: #e7f3ff;
-            border-left-color: #0066cc;
-            color: #004085;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left-color: var(--primary-light);
+            color: #1e40af;
+        }
+
+        .info-box:hover {
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateX(2px);
         }
 
         .warning-box {
-            background: #fff8e1;
-            border-left-color: #f59e0b;
-            color: #664d03;
+            background: linear-gradient(135deg, #fffbeb, #fef08a);
+            border-left-color: var(--warning);
+            color: #78350f;
+        }
+
+        .warning-box:hover {
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);
+            transform: translateX(2px);
         }
 
         .danger-box {
-            background: #ffe7e7;
-            border-left-color: #ef4444;
-            color: #721c24;
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left-color: var(--danger-light);
+            color: #7f1d1d;
+        }
+
+        .danger-box:hover {
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+            transform: translateX(2px);
         }
 
         /* Code blocks */
         code {
-            background: #f0f0f0;
-            padding: 2px 4px;
-            border-radius: 2px;
+            background: var(--bg-tertiary);
+            padding: 2px 6px;
+            border-radius: 3px;
             font-family: 'Courier New', monospace;
             font-size: 12px;
+            color: var(--danger);
         }
 
         pre {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 12px;
-            border-radius: 4px;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 14px;
+            border-radius: 6px;
             overflow-x: auto;
-            margin: 8px 0;
+            margin: 10px 0;
             font-size: 12px;
-            line-height: 1.4;
+            line-height: 1.5;
+            border-left: 4px solid var(--primary-light);
         }
 
         pre code {
             background: none;
             padding: 0;
-            color: #d4d4d4;
+            color: #e2e8f0;
         }
 
         /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: var(--bg-tertiary);
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 4px;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            border-radius: 5px;
+            border: 2px solid var(--bg-tertiary);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: linear-gradient(180deg, var(--primary-light), var(--accent));
         }
 
         * {
-            scrollbar-color: #888 #f1f1f1;
+            scrollbar-color: linear-gradient(180deg, var(--primary), var(--accent)) var(--bg-tertiary);
             scrollbar-width: thin;
         }
 
@@ -316,8 +400,8 @@
                 width: 280px;
                 height: 100vh;
                 z-index: 1000;
-                transition: left 0.3s;
-                box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 8px rgba(0,0,0,0.15);
             }
 
             .sidebar.open {
@@ -339,75 +423,137 @@
 
         .toc-section {
             margin-bottom: 32px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .toc-section:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 2px 12px rgba(59, 130, 246, 0.05);
         }
 
         strong {
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         em {
             font-style: italic;
+            color: var(--accent);
         }
+
+        .section-indicator {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 24px;
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+            border-top: 3px solid var(--primary);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        footer p {
+            margin: 6px 0;
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .toc-section {
+            animation: slideIn 0.4s ease forwards;
+        }
+
+        .toc-section:nth-child(1) { animation-delay: 0s; }
+        .toc-section:nth-child(2) { animation-delay: 0.05s; }
+        .toc-section:nth-child(3) { animation-delay: 0.1s; }
+        .toc-section:nth-child(n+4) { animation: none; }
     </style>
 </head>
 <body>
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
-        <div class="sidebar-title">Architecture Docs</div>
+        <div class="sidebar-title">🏥 Architecture Docs</div>
 
         <div class="nav-group">
-            <div class="nav-group-title">Overview</div>
+            <div class="nav-group-title">📋 Overview</div>
             <a class="nav-item active" onclick="scrollTo('section-1')">1. Purpose</a>
             <a class="nav-item" onclick="scrollTo('section-2')">2. System Summary</a>
             <a class="nav-item" onclick="scrollTo('section-3')">3. High-Level Architecture</a>
         </div>
 
         <div class="nav-group">
-            <div class="nav-group-title">Domains</div>
+            <div class="nav-group-title">🔄 Domains</div>
             <a class="nav-item" onclick="scrollTo('section-4')">4. Booking Domains</a>
             <a class="nav-item" onclick="scrollTo('section-5')">5. Application Services</a>
             <a class="nav-item" onclick="scrollTo('section-6')">6. Subservices</a>
         </div>
 
         <div class="nav-group">
-            <div class="nav-group-title">Infrastructure</div>
+            <div class="nav-group-title">☁️ Infrastructure</div>
             <a class="nav-item" onclick="scrollTo('section-7')">7. Cloud / Hosting</a>
             <a class="nav-item" onclick="scrollTo('section-8')">8. Security & Monitoring</a>
             <a class="nav-item" onclick="scrollTo('section-9')">9. Special Modules</a>
         </div>
 
         <div class="nav-group">
-            <div class="nav-group-title">Platform</div>
+            <div class="nav-group-title">🔌 Platform</div>
             <a class="nav-item" onclick="scrollTo('section-10')">10. API Surface</a>
             <a class="nav-item" onclick="scrollTo('section-11')">11. Technology Stack</a>
             <a class="nav-item" onclick="scrollTo('section-12')">12. Functional Description</a>
         </div>
 
         <div class="nav-group">
-            <div class="nav-group-title">Network & Security</div>
+            <div class="nav-group-title">🌐 Network & Security</div>
             <a class="nav-item" onclick="scrollTo('section-13')">13. Network Architecture</a>
             <a class="nav-item" onclick="scrollTo('section-14')">14. Production Best Practices</a>
             <a class="nav-item" onclick="scrollTo('section-15')">15. Cybersecurity RBAC</a>
         </div>
 
         <div class="nav-group">
-            <div class="nav-group-title">Risk & Recovery</div>
+            <div class="nav-group-title">🚨 Risk & Recovery</div>
             <a class="nav-item" onclick="scrollTo('section-16')">16. Disaster Recovery</a>
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="main">
-        <h1>Ambulance / Service Booking App</h1>
-        <div class="doc-meta">
-            <strong>Architecture & Technical Overview</strong><br>
-            Version 1.0 | Prepared: 2026-08-30<br>
-            Based on: Direct codebase inspection — Laravel 10 (PHP 8.2) monolithic application
+        <div class="header-section">
+            <h1>🏥 Ambulance / Service Booking App</h1>
+            <div class="doc-meta">
+                <strong>Architecture & Technical Overview</strong><br>
+                Version 1.0 | Prepared: 2026-08-30<br>
+                Based on: Direct codebase inspection — Laravel 10 (PHP 8.2) monolithic application
+            </div>
         </div>
 
         <!-- Section 1: Purpose -->
         <section id="section-1" class="toc-section">
-            <h2>1. Purpose</h2>
+            <span class="section-indicator">01</span>
+            <h2>Purpose</h2>
             <p>This document describes the current, as-built technical architecture of the platform, covering both product lines it serves:</p>
             <ul>
                 <li><strong>Vehicle Booking (Taxi/Ride-hailing)</strong> — Rider requests a ride, a Driver is dispatched, ride is completed and paid for.</li>
@@ -418,11 +564,12 @@
 
         <!-- Section 2: System Summary -->
         <section id="section-2" class="toc-section">
-            <h2>2. System Summary</h2>
+            <span class="section-indicator">02</span>
+            <h2>System Summary</h2>
             <p>The backend is a <strong>single Laravel 10 (PHP 8.2) monolithic application</strong> — not a microservices architecture. It serves three kinds of clients from one codebase:</p>
             <table>
                 <tr>
-                    <th>Client</th>
+                    <th>🎯 Client</th>
                     <th>Interface</th>
                     <th>Location</th>
                 </tr>
@@ -447,7 +594,8 @@
 
         <!-- Section 3: High-Level Architecture -->
         <section id="section-3" class="toc-section">
-            <h2>3. High-Level Architecture Diagram</h2>
+            <span class="section-indicator">03</span>
+            <h2>High-Level Architecture Diagram</h2>
             <div class="diagram-wrapper">
                 <div class="mermaid">
 flowchart TD
@@ -503,12 +651,13 @@ flowchart TD
     HOST --> DB & REDIS & WS
                 </div>
             </div>
-            <div class="info-box"><strong>Key Point:</strong> This is a role-partitioned monolith with dedicated API endpoints for Rider, Driver, and Company roles — all served from one Laravel application.</div>
+            <div class="info-box"><strong>💡 Key Point:</strong> This is a role-partitioned monolith with dedicated API endpoints for Rider, Driver, and Company roles — all served from one Laravel application.</div>
         </section>
 
         <!-- Section 4: Two Booking Domains -->
         <section id="section-4" class="toc-section">
-            <h2>4. The Two Booking Domains</h2>
+            <span class="section-indicator">04</span>
+            <h2>The Two Booking Domains</h2>
             <p>Both domains share the same auth, tenant, notification, and payment infrastructure. They differ in what is being fulfilled: a <em>ride</em> vs. a <em>service order</em>.</p>
 
             <h3>4.1 Vehicle (Taxi) Booking — Dispatch Flow</h3>
@@ -539,7 +688,7 @@ sequenceDiagram
     end
                 </div>
             </div>
-            <p><strong>Key implementation facts:</strong></p>
+            <p><strong>✨ Key implementation facts:</strong></p>
             <ul>
                 <li>Radius expansion: <strong>0–2km → 2–5km → 5–10km</strong>, each stage waits up to 30 seconds</li>
                 <li>Concurrent-acceptance race resolved with <strong>Redis lock</strong> (<code>booking:accept:{rideID}</code>)</li>
@@ -583,16 +732,17 @@ sequenceDiagram
     end
                 </div>
             </div>
-            <p><strong>Additional capability:</strong> Drivers can register additional services on-site (<code>/driver/service-orders/{id}/additional-services</code>), each with OTP verification.</p>
+            <div class="warning-box"><strong>⚙️ Additional capability:</strong> Drivers can register additional services on-site (<code>/driver/service-orders/{id}/additional-services</code>), each with OTP verification.</div>
         </section>
 
         <!-- Section 5: Application Services -->
         <section id="section-5" class="toc-section">
-            <h2>5. Application Services — Module Breakdown</h2>
+            <span class="section-indicator">05</span>
+            <h2>Application Services — Module Breakdown</h2>
             <p>The Laravel monolith is organized by role under <code>app/Http/Controllers/</code>:</p>
             <table>
                 <tr>
-                    <th>Module</th>
+                    <th>📦 Module</th>
                     <th>Path</th>
                     <th>Scope</th>
                 </tr>
@@ -627,15 +777,16 @@ sequenceDiagram
                     <td>Platform-wide administration, tenant management, mirrors Company controllers</td>
                 </tr>
             </table>
-            <p>This is a <strong>role-partitioned monolith</strong>, not domain microservices: all roles are controller namespaces inside one deployable app, sharing one database.</p>
+            <div class="info-box"><strong>🏗️ Architecture Pattern:</strong> This is a <strong>role-partitioned monolith</strong>, not domain microservices: all roles are controller namespaces inside one deployable app, sharing one database.</div>
         </section>
 
         <!-- Section 6: Subservices -->
         <section id="section-6" class="toc-section">
-            <h2>6. Subservices — What Exists vs. What Doesn't</h2>
+            <span class="section-indicator">06</span>
+            <h2>Subservices — What Exists vs. What Doesn't</h2>
             <table>
                 <tr>
-                    <th>Subservice</th>
+                    <th>🔧 Subservice</th>
                     <th>Status</th>
                     <th>What Actually Exists</th>
                 </tr>
@@ -669,7 +820,8 @@ sequenceDiagram
 
         <!-- Section 7: Cloud & Hosting -->
         <section id="section-7" class="toc-section">
-            <h2>7. Cloud / Hosting Layer</h2>
+            <span class="section-indicator">07</span>
+            <h2>Cloud / Hosting Layer</h2>
             <div class="diagram-wrapper">
                 <div class="mermaid">
 flowchart LR
@@ -689,16 +841,17 @@ flowchart LR
     CERT -.-> WS
                 </div>
             </div>
-            <div class="warning-box"><strong>Not present/not confirmed:</strong> container orchestration (K8s), auto-scaling, managed database, CDN, load balancer, zero-downtime deployments, staging/prod separation beyond <code>.env</code>.</div>
+            <div class="warning-box"><strong>⚠️ Not present/not confirmed:</strong> container orchestration (K8s), auto-scaling, managed database, CDN, load balancer, zero-downtime deployments, staging/prod separation beyond <code>.env</code>.</div>
             <p>Current setup is <strong>single-host Docker Compose</strong> — appropriate for current stage, but scaling/HA plan would need separate definition.</p>
         </section>
 
         <!-- Section 8: Security & Monitoring -->
         <section id="section-8" class="toc-section">
-            <h2>8. Security & Monitoring Layer</h2>
+            <span class="section-indicator">08</span>
+            <h2>Security & Monitoring Layer</h2>
             <table>
                 <tr>
-                    <th>Concern</th>
+                    <th>🔐 Concern</th>
                     <th>Implementation</th>
                     <th>Status</th>
                 </tr>
@@ -752,10 +905,11 @@ flowchart LR
 
         <!-- Section 9: Special Modules -->
         <section id="section-9" class="toc-section">
-            <h2>9. Special Modules</h2>
+            <span class="section-indicator">09</span>
+            <h2>Special Modules</h2>
             <table>
                 <tr>
-                    <th>Module</th>
+                    <th>🎯 Module</th>
                     <th>Status</th>
                     <th>Detail</th>
                 </tr>
@@ -774,13 +928,14 @@ flowchart LR
 
         <!-- Section 10: API Surface -->
         <section id="section-10" class="toc-section">
-            <h2>10. API Surface (Current)</h2>
+            <span class="section-indicator">10</span>
+            <h2>API Surface (Current)</h2>
             <p>Living, tested API reference exists in <code>APIs/</code> request collections:</p>
             <table>
                 <tr>
-                    <th>Area</th>
+                    <th>📡 Area</th>
                     <th>Files</th>
-                    <th>Endpoint Count</th>
+                    <th>Endpoints</th>
                 </tr>
                 <tr>
                     <td>Rider — Auth</td>
@@ -818,16 +973,17 @@ flowchart LR
                     <td>~4</td>
                 </tr>
             </table>
-            <div class="info-box">Narrative API reference for <strong>Service Booking</strong> exists at <code>docs/service-booking-integration-guide.md</code> — authoritative for that domain. <strong>Vehicle Booking API documentation</strong> does not yet exist as a narrative guide.</div>
+            <div class="info-box">📚 Narrative API reference for <strong>Service Booking</strong> exists at <code>docs/service-booking-integration-guide.md</code> — authoritative for that domain. <strong>Vehicle Booking API documentation</strong> does not yet exist as a narrative guide.</div>
             <p><strong>Machine-readable OpenAPI output:</strong> NOT CURRENTLY AVAILABLE — main gap for formal importable API spec (Postman/SwaggerUI).</p>
         </section>
 
         <!-- Section 11: Technology Stack -->
         <section id="section-11" class="toc-section">
-            <h2>11. Technology Stack (Verified)</h2>
+            <span class="section-indicator">11</span>
+            <h2>Technology Stack (Verified)</h2>
             <table>
                 <tr>
-                    <th>Layer</th>
+                    <th>🛠️ Layer</th>
                     <th>Technology</th>
                 </tr>
                 <tr>
@@ -883,7 +1039,8 @@ flowchart LR
 
         <!-- Section 12: Functional Descriptions -->
         <section id="section-12" class="toc-section">
-            <h2>12. General Platform Presentation & Functional Descriptions</h2>
+            <span class="section-indicator">12</span>
+            <h2>General Platform Presentation & Functional Descriptions</h2>
             <p>Platform capabilities described in functional/product terms — what each user type can actually do — independent of implementation.</p>
 
             <h3>12.1 Platform Overview</h3>
@@ -896,84 +1053,85 @@ flowchart LR
 
             <h3>12.2 Rider — Functional Capabilities</h3>
             <ul>
-                <li>Register and log in (email/mobile + password); verify via email and SMS OTP</li>
-                <li>Manage profile, saved addresses, profile photo</li>
-                <li>Browse available vehicle types and facilities (AC, luggage capacity)</li>
-                <li>Browse service categories, subcategories, and services</li>
-                <li>Get instant distance-and-fare estimate before booking</li>
-                <li>Request ride and track search in real time (progressive radius expansion with live updates)</li>
-                <li>Add services to cart, adjust quantities, check out as order</li>
-                <li>Track ride/order lifecycle in real time (searching → assigned → in progress → completed)</li>
-                <li>Schedule rides in advance; view or cancel scheduled rides</li>
-                <li>Verify service start and completion using driver-entered OTP codes</li>
-                <li>Pay by cash or card (Stripe)</li>
-                <li>Leave reviews; raise complaints</li>
-                <li>View rider credit/wallet balance and history</li>
+                <li>✅ Register and log in (email/mobile + password); verify via email and SMS OTP</li>
+                <li>✅ Manage profile, saved addresses, profile photo</li>
+                <li>✅ Browse available vehicle types and facilities (AC, luggage capacity)</li>
+                <li>✅ Browse service categories, subcategories, and services</li>
+                <li>✅ Get instant distance-and-fare estimate before booking</li>
+                <li>✅ Request ride and track search in real time (progressive radius expansion with live updates)</li>
+                <li>✅ Add services to cart, adjust quantities, check out as order</li>
+                <li>✅ Track ride/order lifecycle in real time (searching → assigned → in progress → completed)</li>
+                <li>✅ Schedule rides in advance; view or cancel scheduled rides</li>
+                <li>✅ Verify service start and completion using driver-entered OTP codes</li>
+                <li>✅ Pay by cash or card (Stripe)</li>
+                <li>✅ Leave reviews; raise complaints</li>
+                <li>✅ View rider credit/wallet balance and history</li>
             </ul>
 
             <h3>12.3 Driver / Service Provider — Functional Capabilities</h3>
             <ul>
-                <li>Register, log in, password-reset independent of rider</li>
-                <li>Go online/offline; send periodic heartbeat/location updates</li>
-                <li>Complete KYC: upload identity/license documents; track approval and expiry</li>
-                <li>Register one or more vehicles; link bank account for payouts</li>
-                <li>Set which service categories/subcategories they are qualified for</li>
-                <li>Receive and accept/decline ride and service-order requests as dispatched</li>
-                <li>Update ride status through trip lifecycle (arrived, started, completed)</li>
-                <li>For service orders: start (generate rider OTP), complete (generate second OTP), register additional on-site services (independently OTP-verified)</li>
-                <li>Select payment method (cash or online) at end of ride/order</li>
-                <li>View and manage schedules and appointments</li>
-                <li>Request withdrawals of accumulated earnings</li>
-                <li>View reviews; file and track complaints</li>
+                <li>✅ Register, log in, password-reset independent of rider</li>
+                <li>✅ Go online/offline; send periodic heartbeat/location updates</li>
+                <li>✅ Complete KYC: upload identity/license documents; track approval and expiry</li>
+                <li>✅ Register one or more vehicles; link bank account for payouts</li>
+                <li>✅ Set which service categories/subcategories they are qualified for</li>
+                <li>✅ Receive and accept/decline ride and service-order requests as dispatched</li>
+                <li>✅ Update ride status through trip lifecycle (arrived, started, completed)</li>
+                <li>✅ For service orders: start (generate rider OTP), complete (generate second OTP), register additional on-site services (independently OTP-verified)</li>
+                <li>✅ Select payment method (cash or online) at end of ride/order</li>
+                <li>✅ View and manage schedules and appointments</li>
+                <li>✅ Request withdrawals of accumulated earnings</li>
+                <li>✅ View reviews; file and track complaints</li>
             </ul>
 
             <h3>12.4 Company (Partner) Admin — Functional Capabilities</h3>
             <p>Run one tenant's entire operation from a web dashboard:</p>
             <ul>
-                <li>Manage driver roster: onboarding, KYC approval, document/license expiry tracking, vehicle assignment, bank details, service-category mapping</li>
-                <li>Manage rider base: profiles, addresses, credits/wallet adjustments, complaint handling</li>
-                <li>Define service catalog: categories, subcategories, services, facility items</li>
-                <li>Configure pricing: vehicle pricing, service pricing (state-wise)</li>
-                <li>Configure operating geography: zones, neighborhoods, state-level settings</li>
-                <li>Configure tax rules and payment settings</li>
-                <li>Review and moderate driver and rider reviews and complaints</li>
-                <li>Track and manage scheduled rides across driver fleet</li>
-                <li>Send push notifications (individual or by group); manage notification group membership</li>
-                <li>Customize email templates for tenant communications</li>
-                <li>View operational analytics: revenue trends, ride-status breakdowns, insights map, assigned-vs-missed, completed-vs-canceled</li>
-                <li>Generate and export reports (Excel/PDF)</li>
-                <li>Manage payments and driver withdrawal requests</li>
-                <li>Manage operator accounts working under them</li>
+                <li>✅ Manage driver roster: onboarding, KYC approval, document/license expiry tracking, vehicle assignment, bank details, service-category mapping</li>
+                <li>✅ Manage rider base: profiles, addresses, credits/wallet adjustments, complaint handling</li>
+                <li>✅ Define service catalog: categories, subcategories, services, facility items</li>
+                <li>✅ Configure pricing: vehicle pricing, service pricing (state-wise)</li>
+                <li>✅ Configure operating geography: zones, neighborhoods, state-level settings</li>
+                <li>✅ Configure tax rules and payment settings</li>
+                <li>✅ Review and moderate driver and rider reviews and complaints</li>
+                <li>✅ Track and manage scheduled rides across driver fleet</li>
+                <li>✅ Send push notifications (individual or by group); manage notification group membership</li>
+                <li>✅ Customize email templates for tenant communications</li>
+                <li>✅ View operational analytics: revenue trends, ride-status breakdowns, insights map, assigned-vs-missed, completed-vs-canceled</li>
+                <li>✅ Generate and export reports (Excel/PDF)</li>
+                <li>✅ Manage payments and driver withdrawal requests</li>
+                <li>✅ Manage operator accounts working under them</li>
             </ul>
 
             <h3>12.5 Operator — Functional Capabilities</h3>
             <p>Scoped-down version of Company Admin for day-to-day staff:</p>
             <ul>
-                <li>Manage drivers, driver vehicles, riders, rider credits, scheduled rides</li>
-                <li>NO access to tenant-wide configuration (pricing, taxes, zones, categories)</li>
+                <li>✅ Manage drivers, driver vehicles, riders, rider credits, scheduled rides</li>
+                <li>❌ NO access to tenant-wide configuration (pricing, taxes, zones, categories)</li>
             </ul>
 
             <h3>12.6 Platform SysAdmin — Functional Capabilities</h3>
             <p>Operate above all tenants; mirror nearly every Company Admin capability at platform scope:</p>
             <ul>
-                <li>Onboard and manage companies/tenants (customers of platform)</li>
-                <li>Perform driver, rider, KYC, complaint, review, pricing, zone, tax, notification management across any tenant</li>
-                <li>Manage platform-wide payments and bank lists</li>
-                <li>View platform-wide analytics and reports</li>
+                <li>✅ Onboard and manage companies/tenants (customers of platform)</li>
+                <li>✅ Perform driver, rider, KYC, complaint, review, pricing, zone, tax, notification management across any tenant</li>
+                <li>✅ Manage platform-wide payments and bank lists</li>
+                <li>✅ View platform-wide analytics and reports</li>
             </ul>
 
             <h3>12.7 Shared, Cross-Cutting Functionality</h3>
             <ul>
-                <li>Real-time updates over WebSocket for ride search, order status, driver location/heartbeat</li>
-                <li>Push notifications (Firebase Cloud Messaging)</li>
-                <li>Stripe-based online payments alongside cash</li>
-                <li>Multi-tenant isolation — every tenant's data, drivers, riders scoped to that tenant's subdomain only</li>
+                <li>✅ Real-time updates over WebSocket for ride search, order status, driver location/heartbeat</li>
+                <li>✅ Push notifications (Firebase Cloud Messaging)</li>
+                <li>✅ Stripe-based online payments alongside cash</li>
+                <li>✅ Multi-tenant isolation — every tenant's data, drivers, riders scoped to that tenant's subdomain only</li>
             </ul>
         </section>
 
         <!-- Section 13: Network & Technical Architecture -->
         <section id="section-13" class="toc-section">
-            <h2>13. Network & Technical Architecture Specifications</h2>
+            <span class="section-indicator">13</span>
+            <h2>Network & Technical Architecture Specifications</h2>
 
             <h3>13.1 Network Topology Diagram</h3>
             <div class="diagram-wrapper">
@@ -1019,12 +1177,12 @@ flowchart TB
     APP -->|"HTTPS/SMTP"| MAILSVC
                 </div>
             </div>
-            <div class="danger-box"><strong>Security note:</strong> Database (3306) and Redis (6379) are published to all interfaces with no host-interface restriction — unlike Adminer (127.0.0.1:8080 only).</div>
+            <div class="danger-box">🚨 <strong>Security alert:</strong> Database (3306) and Redis (6379) are published to all interfaces with no host-interface restriction — unlike Adminer (127.0.0.1:8080 only).</div>
 
             <h3>13.2 Ports & Protocols</h3>
             <table>
                 <tr>
-                    <th>Port</th>
+                    <th>🔌 Port</th>
                     <th>Protocol</th>
                     <th>Service</th>
                     <th>Host Exposure</th>
@@ -1066,7 +1224,7 @@ flowchart TB
                 <li>Certificate is single-domain: <code>CN=amb.zcodia.in</code>, no wildcard or additional SANs</li>
                 <li><strong>WebSockets server (port 6001) DOES</strong> terminate TLS explicitly (<code>websockets:serve --ssl</code>)</li>
                 <li><strong>Main application (port 8000) DOES NOT</strong> — runs <code>php artisan serve</code> with no SSL flag. HTTPS for API/admin routes is handled by an external reverse proxy/load balancer (NOT PRESENT in this repo)</li>
-                <li>Multi-tenant routing pattern (<code>{company}.<main_domain}</code>) requires wildcard subdomain resolution. Certificate is single-domain — production wildcard/multi-SAN certificate coverage should be confirmed separately</li>
+                <li>Multi-tenant routing pattern (<code>{company}.<main_domain></code>) requires wildcard subdomain resolution. Certificate is single-domain — production wildcard/multi-SAN certificate coverage should be confirmed separately</li>
             </ul>
 
             <h3>13.4 DNS & Multi-Tenant Domain Routing</h3>
@@ -1087,7 +1245,7 @@ flowchart TB
             <h3>13.6 External Third-Party Dependencies</h3>
             <table>
                 <tr>
-                    <th>Service</th>
+                    <th>🌐 Service</th>
                     <th>Purpose</th>
                     <th>API Calls</th>
                 </tr>
@@ -1159,10 +1317,11 @@ flowchart TB
 
         <!-- Section 14: Production Best Practices -->
         <section id="section-14" class="toc-section">
-            <h2>14. Production Hosting Best Practices (Recommendations)</h2>
+            <span class="section-indicator">14</span>
+            <h2>Production Hosting Best Practices (Recommendations)</h2>
             <table>
                 <tr>
-                    <th>Concern</th>
+                    <th>📋 Concern</th>
                     <th>Recommendation</th>
                 </tr>
                 <tr>
@@ -1210,13 +1369,14 @@ flowchart TB
 
         <!-- Section 15: Cybersecurity RBAC -->
         <section id="section-15" class="toc-section">
-            <h2>15. Cybersecurity & Role-Based Access Control (RBAC)</h2>
+            <span class="section-indicator">15</span>
+            <h2>Cybersecurity & Role-Based Access Control (RBAC)</h2>
 
             <h3>15.1 RBAC Implementation</h3>
             <p>The platform enforces five distinct roles, each with dedicated middleware and route scoping:</p>
             <table>
                 <tr>
-                    <th>Role</th>
+                    <th>👥 Role</th>
                     <th>Middleware Class</th>
                     <th>Route Namespace</th>
                     <th>Capabilities</th>
@@ -1264,7 +1424,7 @@ flowchart TB
             <h3>15.3 Security Implementation Status</h3>
             <table>
                 <tr>
-                    <th>Security Area</th>
+                    <th>🔒 Security Area</th>
                     <th>Implementation</th>
                     <th>Status</th>
                 </tr>
@@ -1281,15 +1441,16 @@ flowchart TB
                 <tr>
                     <td>Debug Mode in Production</td>
                     <td><code>APP_DEBUG=true</code> in <code>.env</code> exposes stack traces and environment variables to error pages — <strong>SECURITY RISK if enabled in production</strong></td>
-                    <td><span class="danger-box" style="display:inline-block;">VERIFY OFF</span></td>
+                    <td><span style="background:linear-gradient(135deg,#fee2e2,#fecaca);color:#991b1b;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;border:1px solid #dc2626;display:inline-block;">VERIFY OFF</span></td>
                 </tr>
             </table>
         </section>
 
         <!-- Section 16: Disaster Recovery -->
         <section id="section-16" class="toc-section">
-            <h2>16. Disaster Recovery Plan</h2>
-            <div class="danger-box"><strong>Critical Risk Statement:</strong> The current single-host Docker Compose deployment has no automated failover, no replica database, and no multi-region backup. If the host VM fails, the entire platform goes offline until the host is recovered or replaced. This is acceptable for development and early staging, but <strong>not suitable for production serving real users</strong>.</div>
+            <span class="section-indicator">16</span>
+            <h2>Disaster Recovery Plan</h2>
+            <div class="danger-box">🚨 <strong>Critical Risk Statement:</strong> The current single-host Docker Compose deployment has no automated failover, no replica database, and no multi-region backup. If the host VM fails, the entire platform goes offline until the host is recovered or replaced. This is acceptable for development and early staging, but <strong>not suitable for production serving real users</strong>.</div>
 
             <h3>16.1 Recommended DR Best Practices</h3>
             <table>
@@ -1352,22 +1513,23 @@ flowchart TB
 
             <h3>16.2 Immediate Actions (Before Production Release)</h3>
             <ul>
-                <li><strong>Establish backup strategy:</strong> Daily automated database backups to off-site storage; test restore at least once</li>
-                <li><strong>Enable debug mode off:</strong> Verify <code>APP_DEBUG=false</code> in production <code>.env</code></li>
-                <li><strong>Enable HTTPS for API:</strong> Place a reverse proxy (nginx/HAProxy) with wildcard TLS certificate in front of port 8000</li>
-                <li><strong>Document & review:</strong> Capture how the production host is set up; document steps to rebuild it from scratch</li>
-                <li><strong>Plan scaling:</strong> If expecting significant traffic growth, prototype migration to Kubernetes or managed container service</li>
+                <li>✅ <strong>Establish backup strategy:</strong> Daily automated database backups to off-site storage; test restore at least once</li>
+                <li>✅ <strong>Enable debug mode off:</strong> Verify <code>APP_DEBUG=false</code> in production <code>.env</code></li>
+                <li>✅ <strong>Enable HTTPS for API:</strong> Place a reverse proxy (nginx/HAProxy) with wildcard TLS certificate in front of port 8000</li>
+                <li>✅ <strong>Document & review:</strong> Capture how the production host is set up; document steps to rebuild it from scratch</li>
+                <li>✅ <strong>Plan scaling:</strong> If expecting significant traffic growth, prototype migration to Kubernetes or managed container service</li>
             </ul>
         </section>
 
-        <footer style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #333; font-size: 12px; color: #666;">
-            <p><strong>Document Version:</strong> 1.0 | <strong>Last Updated:</strong> 2026-08-30</p>
+        <footer>
+            <p><strong>📄 Document Version:</strong> 1.0 | <strong>⏰ Last Updated:</strong> 2026-08-30</p>
             <p>This document describes the <em>as-built</em> architecture of the Ambulance / Service Booking platform based on direct codebase inspection. All information is current at the time of writing. Anything explicitly marked as <span class="badge badge-absent">NOT PRESENT</span> has been verified as absent from the codebase.</p>
+            <p><strong>👨‍💻 Prepared by:</strong> Architecture Review Team | <strong>🎯 Purpose:</strong> Client stakeholder reference & technical decision-making</p>
         </footer>
     </main>
 
     <script>
-        // Mermaid initialization for interactive diagrams
+        // Mermaid initialization
         mermaid.initialize({
             startOnLoad: true,
             theme: 'default',
@@ -1381,23 +1543,11 @@ flowchart TB
             const element = document.getElementById(sectionId);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth' });
-                // Update active nav item
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.classList.remove('active');
                 });
                 event.target.classList.add('active');
             }
-        }
-
-        // Responsive sidebar toggle for mobile
-        const main = document.querySelector('.main');
-        const sidebar = document.querySelector('.sidebar');
-        if (window.innerWidth < 1024) {
-            document.addEventListener('click', (e) => {
-                if (!sidebar.contains(e.target) && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                }
-            });
         }
 
         // Intersection observer for active nav highlighting
